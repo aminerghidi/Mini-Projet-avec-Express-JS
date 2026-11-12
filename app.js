@@ -11,6 +11,10 @@ const app = express();
 // هذا باش السيرفر يفهم الـ JSON اللي يجي في req.body
 app.use(express.json());
 
+// نربطو الـ routes متاع المصادقة
+const authRoutes = require("./routes/authRoutes");
+app.use("/api/auth", authRoutes);
+
 // route تجريبية باش نتأكدو السيرفر يخدم
 app.get("/", (req, res) => {
   res.json({ message: "API Mini-Projet تخدم مليح" });
