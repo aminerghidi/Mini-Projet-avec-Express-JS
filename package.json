@@ -2,10 +2,11 @@
   "name": "mini-projet-api",
   "version": "1.0.0",
   "description": "API REST (Express.js + MongoDB) permettant à des utilisateurs authentifiés de gérer leurs projets et leurs tâches.",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "start": "node app.js",
+  "dev": "nodemon app.js"
+},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/aminerghidi/Mini-Projet-avec-Express-JS.git"
