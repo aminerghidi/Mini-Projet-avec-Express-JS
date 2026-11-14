@@ -1,39 +1,50 @@
-// نحمّلو المتغيرات متاع ملف .env
+// nsobou les config ta3 .env
 require("dotenv").config();
 
-// نستوردو المكتبات اللي نحتاجوهم
+// nimportiw lel bib
 const express = require("express");
 const mongoose = require("mongoose");
 
-// نصنعو التطبيق متاعنا
+// creation ta3 l'application
 const app = express();
 
-// هذا باش السيرفر يفهم الـ JSON اللي يجي في req.body
+// hedha bech serveur yefhem JSON eli yji f req.body
 app.use(express.json());
 
-// نربطو الـ routes متاع المصادقة
+// norbtou routes ta3 authentification
 const authRoutes = require("./routes/authRoutes");
 app.use("/api/auth", authRoutes);
 
-// route تجريبية باش نتأكدو السيرفر يخدم
-app.get("/", (req, res) => {
-  res.json({ message: "API Mini-Projet تخدم مليح" });
+// ===== routes تجريبية مؤقتة : نحيّوهم بعد =====
+const { authenticate, authorize } = require("./middlewares/authMiddleware");
+
+app.get("/test-auth", authenticate, (req, res) => {
+  res.json({ message: "Authentifie", user: req.user });
 });
 
-// نقراو البورت و رابط قاعدة البيانات من .env
+app.get("/test-manager", authenticate, authorize("manager"), (req, res) => {
+  res.json({ message: "Bienvenue manager" });
+});
+
+// route تجريبية باش نتأكدو السيرفر يخدم
+app.get("/", (req, res) => {
+  res.json({ message: "API Mini-Projet work" });
+});
+
+// na9raw port w lien base de données
 const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI;
 
-// نتصلو بـ MongoDB، و كي ينجح الاتصال نشعلو السيرفر
+// nconnectiw b mongoDB w ki c bon n5admou serveur
 mongoose
   .connect(MONGO_URI)
   .then(() => {
-    console.log("تم الاتصال بـ MongoDB");
+    console.log("connected to MongoDB");
     app.listen(PORT, () => {
-      console.log("السيرفر يخدم على البورت " + PORT);
+      console.log("Le port est" + PORT);
     });
   })
   .catch((err) => {
-    // كان صار مشكل في الاتصال نطبعو الغلطة
-    console.error("مشكل في الاتصال بـ MongoDB :", err.message);
+    // ken saret mochkla n5arjou l'erreur
+    console.error(" Probléme de connexion à MongoDB :", err.message);
   });
