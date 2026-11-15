@@ -15,18 +15,11 @@ app.use(express.json());
 const authRoutes = require("./routes/authRoutes");
 app.use("/api/auth", authRoutes);
 
-// ===== routes تجريبية مؤقتة : نحيّوهم بعد =====
-const { authenticate, authorize } = require("./middlewares/authMiddleware");
+//norbtou routes mta3 les projets
+const projectRoutes = require("./routes/projectRoutes");
+app.use("/api/projects", projectRoutes);
 
-app.get("/test-auth", authenticate, (req, res) => {
-  res.json({ message: "Authentifie", user: req.user });
-});
-
-app.get("/test-manager", authenticate, authorize("manager"), (req, res) => {
-  res.json({ message: "Bienvenue manager" });
-});
-
-// route تجريبية باش نتأكدو السيرفر يخدم
+// route nchoufou beha eli serveur ye5dem
 app.get("/", (req, res) => {
   res.json({ message: "API Mini-Projet work" });
 });
