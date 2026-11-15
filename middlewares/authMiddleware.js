@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 
 // bech nchoufou luser da5el token s7i7
 exports.authenticate = (req, res, next) => {
-  // نقراو الـ header متاع Authorization
+  // na9raw header mta3 Authorization
   const header = req.headers.authorization;
 
   // ken famech header w ma tebdech b bearer y5arej erreur
@@ -21,15 +21,15 @@ exports.authenticate = (req, res, next) => {
     // na3mlou save lel les info ta3 user fi req.user 
     req.user = decoded;
 
-    // n5aliweh yet3ada lel middleware wela controller  eli ba3dou
+    // n5aliweh yet3ada lel middleware wela controller eli ba3dou
     next();
   } catch (err) {
     return res.status(401).json({ message: "Token invalide ou expire" });
   }
 };
 
-// middleware الثاني : نتأكدو الدور (role) مسموح
-// authorize("manager") ترجّع function، و هي اللي تتنفذ مع كل طلب
+// nverifiw role authorisé wale
+// authorize("manager") traja3 fonction tsir m3a kol req
 exports.authorize = (...rolesAutorises) => {
   return (req, res, next) => {
     // user n'est pas authorisé
@@ -37,7 +37,7 @@ exports.authorize = (...rolesAutorises) => {
       return res.status(403).json({ message: "Acces refuse : role insuffisant" });
     }
 
-    // الدور صحيح : نكملو
+    // role authorisé net3adew
     next();
   };
 };

@@ -1,8 +1,8 @@
-// نستوردو express و الـ controller
+// nimportiw express w controller
 const express = require("express");
 const { register, login } = require("../controllers/authController");
 
-// نصنعو الـ router
+// nasn3ou el router
 const router = express.Router();
 
 // POST /api/auth/register
