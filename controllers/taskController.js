@@ -26,12 +26,35 @@ exports.creerTache = async (req, res) => {
   }
 };
 
-// nlistiw les tâches (filtres w tri yetzedou fl étape 9b)
+// nlistiw les tâches m3a filtre, recherche w tri
 exports.listerTaches = async (req, res) => {
   try {
-    const taches = await Task.find()
+    const { statut, projet, utilisateurAssigne, search, sort, order } = req.query;
+
+    // objet filtre yet3ammar ken bel paramètres eli jew
+    const filtre = {};
+    if (statut) filtre.statut = statut;
+    if (projet) filtre.projet = projet;
+    if (utilisateurAssigne) filtre.utilisateurAssigne = utilisateurAssigne;
+
+    // recherche texte f titre wela description ($regex, i = ma yfar9ch maj/min)
+    if (search) {
+      filtre.$or = [
+        { titre: { $regex: search, $options: "i" } },
+        { description: { $regex: search, $options: "i" } },
+      ];
+    }
+
+    // tri : les champs autorisé kahaw, sinon par défaut dateCreation
+    const champsTri = ["deadline", "titre", "statut", "dateCreation"];
+    const champ = champsTri.includes(sort) ? sort : "dateCreation";
+    const sens = order === "desc" ? -1 : 1;
+
+    const taches = await Task.find(filtre)
+      .sort({ [champ]: sens })
       .populate("projet", "nom")
       .populate("utilisateurAssigne", "nom login");
+
     res.json(taches);
   } catch (err) {
     res.status(500).json({ message: err.message });
