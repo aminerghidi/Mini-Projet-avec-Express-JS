@@ -22,20 +22,58 @@ exports.creerProjet = async (req, res) => {
   }
 };
 
-// manager khw ychouf les projets lkol
+// manager khw ychouf tous les projets m3a filtre, recherche w tri
 exports.tousLesProjets = async (req, res) => {
   try {
-    const projets = await Project.find().populate("proprietaire", "nom login");
+    const { statut, search, sort, order } = req.query;
+
+    // objet filtre yet3ammar ken bel paramètres eli jew
+    const filtre = {};
+    if (statut) filtre.statut = statut;
+
+    // recherche texte f nom wela description
+    if (search) {
+      filtre.$or = [
+        { nom: { $regex: search, $options: "i" } },
+        { description: { $regex: search, $options: "i" } },
+      ];
+    }
+
+    // tri : ken bel champs eli autorisé, sinon dateCreation
+    const champsTri = ["nom", "statut", "dateCreation"];
+    const champ = champsTri.includes(sort) ? sort : "dateCreation";
+    const sens = order === "desc" ? -1 : 1;
+
+    const projets = await Project.find(filtre)
+      .sort({ [champ]: sens })
+      .populate("proprietaire", "nom login");
     res.json(projets);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
 
-// user ychouf ken les projets mte3ou
+// user ychouf ken projets mte3ou m3a filtre w tri
 exports.mesProjets = async (req, res) => {
   try {
-    const projets = await Project.find({ proprietaire: req.user.id });
+    const { statut, search, sort, order } = req.query;
+
+    // l'id yji men token
+    const filtre = { proprietaire: req.user.id };
+    if (statut) filtre.statut = statut;
+
+    if (search) {
+      filtre.$or = [
+        { nom: { $regex: search, $options: "i" } },
+        { description: { $regex: search, $options: "i" } },
+      ];
+    }
+
+    const champsTri = ["nom", "statut", "dateCreation"];
+    const champ = champsTri.includes(sort) ? sort : "dateCreation";
+    const sens = order === "desc" ? -1 : 1;
+
+    const projets = await Project.find(filtre).sort({ [champ]: sens });
     res.json(projets);
   } catch (err) {
     res.status(500).json({ message: err.message });
