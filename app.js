@@ -19,6 +19,10 @@ app.use("/api/auth", authRoutes);
 const projectRoutes = require("./routes/projectRoutes");
 app.use("/api/projects", projectRoutes);
 
+// norbtou routes mta3 les tâches
+const taskRoutes = require("./routes/taskRoutes");
+app.use("/api/tasks", taskRoutes);
+
 // route nchoufou beha eli serveur ye5dem
 app.get("/", (req, res) => {
   res.json({ message: "API Mini-Projet work" });
